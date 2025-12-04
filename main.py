@@ -25,7 +25,7 @@ def main():
 
 @app.route("/")
 def index():
-    return "<h1>Task Manager działa!</h1><a href='/users'>Przejdź do użytkowników</a>"
+    return "<h1>Task Manager działa!</h1><a href='/users'>Przejdź do użytkowników xyz</a>"
 
 if __name__ == "__main__":
     init_db()
