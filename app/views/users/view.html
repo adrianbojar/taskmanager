@@ -1,0 +1,28 @@
+<h1>Users</h1>
+
+<a href="/users/new">Create New User</a>
+
+<table border="1" cellpadding="8">
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Role</th>
+        <th>Actions</th>
+    </tr>
+
+    {% for user in users %}
+    <tr>
+        <td>{{ user.id }}</td>
+        <td>{{ user.name }}</td>
+        <td>{{ user.email }}</td>
+        <td>{{ user.role }}</td>
+        <td>
+            <a href="/users/{{ user.id }}/edit">Edit</a>
+            <form method="post" action="/users/{{ user.id }}/delete" style="display:inline;">
+                <button type="submit" onclick="return confirm('Delete this user?')">Delete</button>
+            </form>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
