@@ -1,5 +1,6 @@
 from app.entities.models import User
-from app.db.database import SessionLocal
+from db.database import SessionLocal
+
 
 def create_user(user_data):
     db = SessionLocal()
