@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}Admin{% endblock %}
+
+{% block content %}
+  <h1>Panel admina</h1>
+  <p>Tutaj możesz zarządzać użytkownikami.</p>
+
+  <div class="actions" style="margin-bottom: 12px;">
+    <a class="btn" href="{{ url_for('main.dashboard') }}">Dashboard</a>
+    <a class="btn" href="{{ url_for('main.index') }}">Strona główna</a>
+  </div>
+
+  <table class="table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Email</th>
+        <th>Rola</th>
+        <th>Zmień rolę</th>
+        <th>Usuń</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for u in users %}
+      <tr>
+        <td>{{ u.id }}</td>
+        <td>{{ u.email }}</td>
+        <td><b>{{ u.role }}</b></td>
+
+        <td>
+          {% if u.id == current_user.id %}
+            (to Ty)
+          {% else %}
+            <form method="post" action="{{ url_for('admin.change_role') }}" class="inline">
+              <input type="hidden" name="user_id" value="{{ u.id }}">
+              <select name="role">
+                <option value="user" {% if u.role == 'user' %}selected{% endif %}>user</option>
+                <option value="admin" {% if u.role == 'admin' %}selected{% endif %}>admin</option>
+              </select>
+              <button class="btn" type="submit">Zapisz</button>
+            </form>
+          {% endif %}
+        </td>
+
+        <td>
+          {% if u.id == current_user.id %}
+            —
+          {% else %}
+            <form method="post" action="{{ url_for('admin.delete_user') }}" class="inline"
+                  onsubmit="return confirm('Na pewno usunąć użytkownika?');">
+              <input type="hidden" name="user_id" value="{{ u.id }}">
+              <button class="btn danger" type="submit">Usuń</button>
+            </form>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}

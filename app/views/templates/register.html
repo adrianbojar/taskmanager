@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Rejestracja{% endblock %}
+
+{% block content %}
+  <h1>Rejestracja</h1>
+
+  <form method="post" class="card">
+    <label>Email</label>
+    <input type="email" name="email" required>
+
+    <label>Hasło</label>
+    <input type="password" name="password" required>
+
+    <button class="btn" type="submit">Utwórz konto</button>
+  </form>
+
+  <p>Masz konto? <a href="{{ url_for('auth.login') }}">Zaloguj się</a></p>
+{% endblock %}

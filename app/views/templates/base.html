@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Moja aplikacja{% endblock %}</title>
+
+  <!-- cache-busting -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css', v=2) }}">
+</head>
+<body>
+  <nav class="nav">
+    <div class="nav-inner">
+      <span class="nav-clock" id="navClock"></span>
+      <a href="{{ url_for('main.index') }}">Home</a>
+      <a href="{{ url_for('main.dashboard') }}">Dashboard</a>
+
+      {% if current_user.is_authenticated and current_user.role == "admin" %}
+        <a href="{{ url_for('admin.panel') }}">Admin</a>
+      {% endif %}
+
+      <span class="spacer"></span>
+
+      {% if current_user.is_authenticated %}
+        <span class="nav-user">{{ current_user.email }}</span>
+        <a href="{{ url_for('auth.logout') }}">Logout</a>
+      {% else %}
+        <a href="{{ url_for('auth.register') }}">Rejestracja</a>
+        <a href="{{ url_for('auth.login') }}">Login</a>
+      {% endif %}
+    </div>
+  </nav>
+
+  <main class="container">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="flash-wrap">
+          {% for category, message in messages %}
+            <div class="flash {{ category }}">{{ message }}</div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    {% block content %}{% endblock %}
+  </main>
+  <script>
+  (function () {
+    const el = document.getElementById("navClock");
+    if (!el) return;
+
+    function tick() {
+      const d = new Date();
+      const hh = String(d.getHours()).padStart(2, "0");
+      const mm = String(d.getMinutes()).padStart(2, "0");
+      const ss = String(d.getSeconds()).padStart(2, "0");
+      el.textContent = `${hh}:${mm}:${ss}`;
+    }
+
+    tick();
+    setInterval(tick, 1000);
+  })();
+</script>
+</body>
+</html>
