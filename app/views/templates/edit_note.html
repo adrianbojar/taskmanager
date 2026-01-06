@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}Edytuj notatkę{% endblock %}
+
+{% block content %}
+  <div class="card">
+    <h2 style="margin: 0;">Edytuj notatkę</h2>
+
+    <form method="POST">
+      <label>
+        Treść
+        <textarea name="content" maxlength="500" required>{{ note.content }}</textarea>
+      </label>
+
+      <label>
+        Kategoria
+        <select name="category" required>
+          {% for c in categories %}
+            <option value="{{ c }}" {% if note.category == c %}selected{% endif %}>{{ c }}</option>
+          {% endfor %}
+        </select>
+      </label>
+
+      <label class="inline">
+        <input type="checkbox" name="is_done" {% if note.is_done %}checked{% endif %}>
+        Wykonane
+      </label>
+
+      <div class="actions">
+        <button class="btn" type="submit">Zapisz</button>
+        <a class="btn" href="{{ url_for('main.dashboard') }}">Anuluj</a>
+      </div>
+    </form>
+  </div>
+{% endblock %}

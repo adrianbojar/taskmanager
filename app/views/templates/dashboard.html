@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+  <h1>Dashboard</h1>
+
+  <p>Zalogowany jako: <b>{{ user.email }}</b></p>
+  <p>Rola: <b>{{ user.role }}</b></p>
+
+  <hr>
+
+  <h2>Dodaj notatkę</h2>
+  <form method="post" action="{{ url_for('notes.add_note') }}" class="card">
+    <label>Treść (max 500 znaków)</label>
+    <textarea name="content" rows="3" maxlength="500" required placeholder="Wpisz notatkę..."></textarea>
+
+    <label>Kategoria</label>
+    <select name="category" required>
+      <option value="Praca">Praca</option>
+      <option value="Dom" selected>Dom</option>
+      <option value="Studia">Studia</option>
+    </select>
+
+    <button class="btn" type="submit">Dodaj</button>
+  </form>
+
+  <h2 style="margin-top: 18px;">Twoje notatki</h2>
+
+  <div class="boards">
+    {% for cat in ["Praca", "Dom", "Studia"] %}
+      <section class="board">
+        <h3 class="board-title">{{ cat }}</h3>
+
+        {% if grouped_notes[cat] and grouped_notes[cat]|length > 0 %}
+          <div class="notes">
+            {% for note in grouped_notes[cat] %}
+              <div class="note {% if note.is_done %}note--done{% endif %}">
+                <div class="note-left">
+                  <form method="post" action="{{ url_for('notes.toggle_done', note_id=note.id) }}">
+                    <button class="check" type="submit" title="Oznacz jako wykonane / niewykonane">
+                      {% if note.is_done %}✓{% else %}○{% endif %}
+                    </button>
+                  </form>
+
+                  <div class="note-content">
+                    {{ note.content }}
+                    <div class="note-meta">
+                      {% if note.updated_at %}
+                        Zm.: {{ note.updated_at.strftime("%Y-%m-%d %H:%M") }}
+                      {% else %}
+                        &nbsp;
+                      {% endif %}
+                    </div>
+                  </div>
+                </div>
+
+                <div class="inline">
+                  <a class="btn" href="{{ url_for('notes.edit_note', note_id=note.id) }}">Edytuj</a>
+
+                  <form method="post" action="{{ url_for('notes.delete_note', note_id=note.id) }}"
+                        onsubmit="return confirm('Usunąć notatkę?');">
+                    <button class="btn danger" type="submit">Usuń</button>
+                  </form>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <div class="empty">Brak notatek.</div>
+        {% endif %}
+      </section>
+    {% endfor %}
+  </div>
+
+  <div class="actions" style="margin-top: 16px;">
+    <a class="btn" href="{{ url_for('auth.logout') }}">Wyloguj</a>
+    <a class="btn" href="{{ url_for('main.index') }}">Strona główna</a>
+  </div>
+{% endblock %}
