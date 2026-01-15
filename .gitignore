@@ -15,7 +15,6 @@ __pycache__/
 .DS_Store
 
 # Baza danych SQLite
-db/
 *.sqlite3
 *.db
 
@@ -25,3 +24,4 @@ db/
 # Pliki tymczasowe
 *.swp
 *.tmp
+ 

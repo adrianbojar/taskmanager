@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+{% block title %}Admin{% endblock %}
+
+{% block content %}
+  <h1>Panel admina</h1>
+  <p>Możesz zarządzać użytkownikami i notatkami.</p>
+
+  <div class="actions" style="margin-bottom: 12px;">
+    <a class="btn" href="{{ url_for('main.dashboard') }}">Dashboard</a>
+    <a class="btn" href="{{ url_for('main.index') }}">Strona główna</a>
+  </div>
+
+  <h2>Użytkownicy</h2>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Email</th>
+        <th>Rola</th>
+        <th>Zmień rolę</th>
+        <th>Usuń</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for u in users %}
+      <tr>
+        <td>{{ u.id }}</td>
+        <td>{{ u.email }}</td>
+        <td><b>{{ u.role }}</b></td>
+
+        <td>
+          {% if u.id == current_user.id %}
+            (to Ty)
+          {% else %}
+            <form method="post" action="{{ url_for('admin.change_role') }}" class="inline">
+              <input type="hidden" name="user_id" value="{{ u.id }}">
+              <select name="role">
+                <option value="user" {% if u.role == 'user' %}selected{% endif %}>user</option>
+                <option value="admin" {% if u.role == 'admin' %}selected{% endif %}>admin</option>
+              </select>
+              <button class="btn" type="submit">Zapisz</button>
+            </form>
+          {% endif %}
+        </td>
+
+        <td>
+          {% if u.id == current_user.id %}
+            —
+          {% else %}
+            <form method="post" action="{{ url_for('admin.delete_user') }}" class="inline"
+                  onsubmit="return confirm('Na pewno usunąć użytkownika?');">
+              <input type="hidden" name="user_id" value="{{ u.id }}">
+              <button class="btn danger" type="submit">Usuń</button>
+            </form>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <hr>
+
+  <h2>Wyślij notatkę do użytkownika</h2>
+  <form method="post" action="{{ url_for('admin.send_note_to_user') }}" class="card">
+    <label>Użytkownik</label>
+    <select name="user_id" required>
+      {% for u in users %}
+        <option value="{{ u.id }}">{{ u.email }} ({{ u.role }})</option>
+      {% endfor %}
+    </select>
+
+    <label>Kategoria</label>
+    <select name="category" required>
+      <option value="Praca" selected>Praca</option>
+      <option value="Studia">Studia</option>
+    </select>
+
+    <label>Treść (max 500 znaków)</label>
+    <textarea name="content" rows="3" maxlength="500" required></textarea>
+
+    <button class="btn" type="submit">Wyślij</button>
+  </form>
+
+  <hr>
+
+  <h2>Wszystkie notatki</h2>
+
+  {% if notes and notes|length > 0 %}
+    <table class="table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Odbiorca</th>
+          <th>Autor</th>
+          <th>Kategoria</th>
+          <th>Wykonane</th>
+          <th>Treść</th>
+          <th>Akcje</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for n in notes %}
+        <tr>
+          <td>{{ n.id }}</td>
+          <td>{{ n.owner.email }}</td>
+          <td>{{ n.author.email }}</td>
+          <td>{{ n.category }}</td>
+          <td>{{ "TAK" if n.is_done else "NIE" }}</td>
+          <td style="white-space: pre-wrap;">{{ n.content }}</td>
+          <td class="inline">
+            <form method="post" action="{{ url_for('admin.toggle_note', note_id=n.id) }}">
+              <button class="btn" type="submit">{% if n.is_done %}Cofnij{% else %}Zrobione{% endif %}</button>
+            </form>
+
+            <a class="btn" href="{{ url_for('admin.edit_note', note_id=n.id) }}">Edytuj</a>
+
+            <form method="post" action="{{ url_for('admin.delete_note', note_id=n.id) }}"
+                  onsubmit="return confirm('Na pewno usunąć notatkę?');">
+              <button class="btn danger" type="submit">Usuń</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p>Brak notatek.</p>
+  {% endif %}
+
+{% endblock %}

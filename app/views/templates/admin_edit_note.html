@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Edytuj notatkę (admin){% endblock %}
+
+{% block content %}
+  <h1>Edytuj notatkę</h1>
+
+  <div class="actions" style="margin-bottom: 12px;">
+    <a class="btn" href="{{ url_for('admin.panel') }}">Wróć do panelu</a>
+  </div>
+
+  <form method="post" class="card">
+    <label>Treść (max 500 znaków)</label>
+    <textarea name="content" rows="5" maxlength="500" required>{{ note.content }}</textarea>
+
+    <label>Kategoria</label>
+    <select name="category" required>
+      {% for c in categories %}
+        <option value="{{ c }}" {% if note.category == c %}selected{% endif %}>{{ c }}</option>
+      {% endfor %}
+    </select>
+
+    <label class="inline">
+      <input type="checkbox" name="is_done" {% if note.is_done %}checked{% endif %}>
+      Wykonane
+    </label>
+
+    <button class="btn" type="submit">Zapisz</button>
+  </form>
+{% endblock %}

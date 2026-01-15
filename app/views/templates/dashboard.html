@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+  <h1>Dashboard</h1>
+
+  <p>Zalogowany jako: <b>{{ user.email }}</b></p>
+  <p>Rola: <b>{{ user.role }}</b></p>
+
+  <hr>
+
+  <h2>Dodaj notatkę</h2>
+  <form method="post" action="{{ url_for('notes.add_note') }}" class="card">
+    <label>Treść (max 500 znaków)</label>
+    <textarea name="content" rows="3" maxlength="500" required></textarea>
+
+    <label>Kategoria</label>
+    <select name="category" required>
+      <option value="Praca">Praca</option>
+      <option value="Studia">Studia</option>
+    </select>
+
+    <button class="btn" type="submit">Dodaj</button>
+  </form>
+
+  <h2 style="margin-top: 18px;">Twoje notatki</h2>
+
+  {% if notes %}
+    <div class="notes">
+      {% for note in notes %}
+        <div class="note {% if note.is_done %}note--done{% endif %}">
+          <div class="note-left">
+            <form method="post" action="{{ url_for('notes.toggle_done', note_id=note.id) }}">
+              <button class="check" type="submit">
+                {% if note.is_done %}✓{% else %}○{% endif %}
+              </button>
+            </form>
+
+            <div class="note-content">
+              <b>{{ note.category }}</b><br>
+              {{ note.content }}
+
+              <div class="note-meta">
+                {% if note.author_id != note.user_id %}
+                  Od admina
+                {% endif %}
+              </div>
+            </div>
+          </div>
+
+          <div class="inline">
+            <a class="btn" href="{{ url_for('notes.edit_note', note_id=note.id) }}">Edytuj</a>
+
+            <form method="post" action="{{ url_for('notes.delete_note', note_id=note.id) }}">
+              <button class="btn danger" type="submit">Usuń</button>
+            </form>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p>Brak notatek.</p>
+  {% endif %}
+
+  <div class="actions" style="margin-top: 16px;">
+    <a class="btn" href="{{ url_for('auth.logout') }}">Wyloguj</a>
+    <a class="btn" href="{{ url_for('main.index') }}">Strona główna</a>
+  </div>
+{% endblock %}
