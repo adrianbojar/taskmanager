@@ -3,11 +3,11 @@
 
 {% block content %}
   <h1>Panel admina</h1>
-  <p>Możesz zarządzać użytkownikami i notatkami.</p>
+  <p class="muted">Zarządzaj użytkownikami i notatkami w jednym miejscu.</p>
 
   <div class="actions" style="margin-bottom: 12px;">
-    <a class="btn" href="{{ url_for('main.dashboard') }}">Dashboard</a>
-    <a class="btn" href="{{ url_for('main.index') }}">Strona główna</a>
+    <a class="btn btn--soft" href="{{ url_for('main.dashboard') }}">Dashboard</a>
+    <a class="btn btn--soft" href="{{ url_for('main.index') }}">Strona główna</a>
   </div>
 
   <h2>Użytkownicy</h2>
@@ -38,7 +38,7 @@
                 <option value="user" {% if u.role == 'user' %}selected{% endif %}>user</option>
                 <option value="admin" {% if u.role == 'admin' %}selected{% endif %}>admin</option>
               </select>
-              <button class="btn" type="submit">Zapisz</button>
+              <button class="btn btn--primary" type="submit">Zapisz</button>
             </form>
           {% endif %}
         </td>
@@ -79,7 +79,9 @@
     <label>Treść (max 500 znaków)</label>
     <textarea name="content" rows="3" maxlength="500" required></textarea>
 
-    <button class="btn" type="submit">Wyślij</button>
+    <div class="actions">
+      <button class="btn btn--primary" type="submit">Wyślij</button>
+    </div>
   </form>
 
   <hr>
@@ -110,10 +112,10 @@
           <td style="white-space: pre-wrap;">{{ n.content }}</td>
           <td class="inline">
             <form method="post" action="{{ url_for('admin.toggle_note', note_id=n.id) }}">
-              <button class="btn" type="submit">{% if n.is_done %}Cofnij{% else %}Zrobione{% endif %}</button>
+              <button class="btn btn--soft" type="submit">{% if n.is_done %}Cofnij{% else %}Zrobione{% endif %}</button>
             </form>
 
-            <a class="btn" href="{{ url_for('admin.edit_note', note_id=n.id) }}">Edytuj</a>
+            <a class="btn btn--soft" href="{{ url_for('admin.edit_note', note_id=n.id) }}">Edytuj</a>
 
             <form method="post" action="{{ url_for('admin.delete_note', note_id=n.id) }}"
                   onsubmit="return confirm('Na pewno usunąć notatkę?');">
@@ -125,7 +127,9 @@
       </tbody>
     </table>
   {% else %}
-    <p>Brak notatek.</p>
+    <div class="flash" style="margin-top:12px;">
+      <div class="flash-dot"></div>
+      <div class="flash-msg">Brak notatek.</div>
+    </div>
   {% endif %}
-
 {% endblock %}

@@ -3,16 +3,23 @@
 
 {% block content %}
   <h1>Logowanie</h1>
+  <p class="muted">Zaloguj się, aby przejść do dashboardu i zarządzać notatkami.</p>
 
   <form method="post" class="card">
     <label>Email</label>
-    <input type="email" name="email" required>
+    <input type="email" name="email" required autocomplete="email" placeholder="np. jan@domain.pl">
 
     <label>Hasło</label>
-    <input type="password" name="password" required>
+    <input type="password" name="password" required autocomplete="current-password" placeholder="Twoje hasło">
 
-    <button class="btn" type="submit">Zaloguj</button>
+    <div class="actions">
+      <button class="btn btn--primary" type="submit">Zaloguj</button>
+      <a class="btn btn--soft" href="{{ url_for('main.index') }}">Wróć</a>
+    </div>
   </form>
 
-  <p>Nie masz konta? <a href="{{ url_for('auth.register') }}">Zarejestruj się</a></p>
+  <p style="margin-top:12px;">
+    Nie masz konta?
+    <a href="{{ url_for('auth.register') }}"><b>Zarejestruj się</b></a>
+  </p>
 {% endblock %}

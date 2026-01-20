@@ -3,11 +3,17 @@
 
 {% block content %}
   <h1>Task Manager</h1>
-  <p>Prosta aplikacja do zarządzania zadaniami i notatkami.</p>
+  <p class="muted">
+    Prosta aplikacja do zarządzania zadaniami i notatkami. Szybko dodajesz, oznaczasz wykonane i edytujesz.
+  </p>
 
   <div class="actions">
-    <a class="btn" href="{{ url_for('auth.register') }}">Rejestracja</a>
-    <a class="btn" href="{{ url_for('auth.login') }}">Logowanie</a>
-    <a class="btn" href="{{ url_for('main.dashboard') }}">Dashboard</a>
+    {% if current_user.is_authenticated %}
+      <a class="btn btn--primary" href="{{ url_for('main.dashboard') }}">Przejdź do dashboardu</a>
+      <a class="btn btn--soft" href="{{ url_for('auth.logout') }}">Wyloguj</a>
+    {% else %}
+      <a class="btn btn--primary" href="{{ url_for('auth.register') }}">Rejestracja</a>
+      <a class="btn btn--soft" href="{{ url_for('auth.login') }}">Logowanie</a>
+    {% endif %}
   </div>
 {% endblock %}

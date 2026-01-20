@@ -3,6 +3,7 @@
 
 {% block content %}
   <h1>Edytuj notatkę</h1>
+  <p class="muted">Zmień treść, kategorię oraz status wykonania.</p>
 
   <form method="post" class="card">
     <label>Treść (max 500 znaków)</label>
@@ -21,8 +22,8 @@
     </label>
 
     <div class="actions">
-      <button class="btn" type="submit">Zapisz</button>
-      <a class="btn" href="{{ url_for('main.dashboard') }}">Anuluj</a>
+      <button class="btn btn--primary" type="submit">Zapisz</button>
+      <a class="btn btn--soft" href="{{ url_for('main.dashboard') }}">Anuluj</a>
     </div>
   </form>
 {% endblock %}

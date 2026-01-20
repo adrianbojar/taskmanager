@@ -3,50 +3,72 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{% block title %}Moja aplikacja{% endblock %}</title>
+  <title>{% block title %}Task Manager{% endblock %}</title>
 
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css', v=3) }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css', v=10) }}">
+  {% block head %}{% endblock %}
 </head>
 <body>
+
   <nav class="nav">
     <div class="nav-inner">
-      <span class="nav-clock" id="navClock"></span>
+      <a class="brand" href="{{ url_for('main.index') }}">
+        <span class="brand-badge">TM</span>
+        <span class="brand-text">Task Manager</span>
+      </a>
 
-      <a href="{{ url_for('main.index') }}">Home</a>
+      <span class="nav-clock" id="navClock" title="Aktualny czas"></span>
+
+      <a class="nav-link" href="{{ url_for('main.index') }}">Start</a>
 
       {% if current_user.is_authenticated %}
-        <a href="{{ url_for('main.dashboard') }}">Dashboard</a>
+        <a class="nav-link" href="{{ url_for('main.dashboard') }}">Dashboard</a>
       {% endif %}
 
       {% if current_user.is_authenticated and current_user.role == "admin" %}
-        <a href="{{ url_for('admin.panel') }}">Admin</a>
+        <a class="nav-link" href="{{ url_for('admin.panel') }}">Admin</a>
       {% endif %}
 
       <span class="spacer"></span>
 
       {% if current_user.is_authenticated %}
-        <span class="nav-user">{{ current_user.email }}</span>
-        <a href="{{ url_for('auth.logout') }}">Logout</a>
+        <span class="nav-user" title="{{ current_user.email }}">
+          {{ current_user.email }}
+        </span>
+        <a class="btn btn--ghost" href="{{ url_for('auth.logout') }}">Wyloguj</a>
       {% else %}
-        <a href="{{ url_for('auth.register') }}">Rejestracja</a>
-        <a href="{{ url_for('auth.login') }}">Login</a>
+        <a class="btn btn--ghost" href="{{ url_for('auth.login') }}">Zaloguj</a>
+        <a class="btn btn--primary" href="{{ url_for('auth.register') }}">Załóż konto</a>
       {% endif %}
     </div>
   </nav>
 
-  <main class="container">
-    {% with messages = get_flashed_messages(with_categories=true) %}
-      {% if messages %}
-        <div class="flash-wrap">
-          {% for category, message in messages %}
-            <div class="flash {{ category }}">{{ message }}</div>
-          {% endfor %}
-        </div>
-      {% endif %}
-    {% endwith %}
+  <main class="page">
+    <div class="container">
 
-    {% block content %}{% endblock %}
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          <div class="flash-wrap">
+            {% for category, message in messages %}
+              <div class="flash {% if category %}{{ category }}{% endif %}">
+                <div class="flash-dot"></div>
+                <div class="flash-msg">{{ message }}</div>
+              </div>
+            {% endfor %}
+          </div>
+        {% endif %}
+      {% endwith %}
+
+      {% block content %}{% endblock %}
+    </div>
   </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="muted">© 2026 Task Manager • Notatki i zadania bez chaosu</div>
+      <div class="muted">Hasła hashowane • CAPTCHA przy rejestracji</div>
+    </div>
+  </footer>
 
   <script>
     (function () {
@@ -65,5 +87,7 @@
       setInterval(tick, 1000);
     })();
   </script>
+
+  {% block scripts %}{% endblock %}
 </body>
 </html>

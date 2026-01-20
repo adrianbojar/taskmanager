@@ -4,15 +4,16 @@
 {% block content %}
   <h1>Dashboard</h1>
 
-  <p>Zalogowany jako: <b>{{ user.email }}</b></p>
-  <p>Rola: <b>{{ user.role }}</b></p>
+  <p class="muted">
+    Zalogowany jako: <b>{{ user.email }}</b> • Rola: <b>{{ user.role }}</b>
+  </p>
 
   <hr>
 
   <h2>Dodaj notatkę</h2>
   <form method="post" action="{{ url_for('notes.add_note') }}" class="card">
     <label>Treść (max 500 znaków)</label>
-    <textarea name="content" rows="3" maxlength="500" required></textarea>
+    <textarea name="content" rows="3" maxlength="500" required placeholder="Wpisz treść notatki..."></textarea>
 
     <label>Kategoria</label>
     <select name="category" required>
@@ -20,7 +21,9 @@
       <option value="Studia">Studia</option>
     </select>
 
-    <button class="btn" type="submit">Dodaj</button>
+    <div class="actions">
+      <button class="btn btn--primary" type="submit">Dodaj</button>
+    </div>
   </form>
 
   <h2 style="margin-top: 18px;">Twoje notatki</h2>
@@ -31,27 +34,30 @@
         <div class="note {% if note.is_done %}note--done{% endif %}">
           <div class="note-left">
             <form method="post" action="{{ url_for('notes.toggle_done', note_id=note.id) }}">
-              <button class="check" type="submit">
+              <button class="check" type="submit" title="Zmień status">
                 {% if note.is_done %}✓{% else %}○{% endif %}
               </button>
             </form>
 
             <div class="note-content">
-              <b>{{ note.category }}</b><br>
+              <div class="inline" style="margin-bottom:6px;">
+                <b>{{ note.category }}</b>
+                <span class="{{ note.presenter.badge_class }}">{{ note.presenter.badge_text }}</span>
+              </div>
+
               {{ note.content }}
 
               <div class="note-meta">
-                {% if note.author_id != note.user_id %}
-                  Od admina
-                {% endif %}
+                {{ note.presenter.source_label }}
               </div>
             </div>
           </div>
 
           <div class="inline">
-            <a class="btn" href="{{ url_for('notes.edit_note', note_id=note.id) }}">Edytuj</a>
+            <a class="btn btn--soft" href="{{ url_for('notes.edit_note', note_id=note.id) }}">Edytuj</a>
 
-            <form method="post" action="{{ url_for('notes.delete_note', note_id=note.id) }}">
+            <form method="post" action="{{ url_for('notes.delete_note', note_id=note.id) }}"
+                  onsubmit="return confirm('Na pewno usunąć notatkę?');">
               <button class="btn danger" type="submit">Usuń</button>
             </form>
           </div>
@@ -59,11 +65,14 @@
       {% endfor %}
     </div>
   {% else %}
-    <p>Brak notatek.</p>
+    <div class="flash" style="margin-top:12px;">
+      <div class="flash-dot"></div>
+      <div class="flash-msg">Brak notatek. Dodaj pierwszą powyżej 👆</div>
+    </div>
   {% endif %}
 
   <div class="actions" style="margin-top: 16px;">
-    <a class="btn" href="{{ url_for('auth.logout') }}">Wyloguj</a>
-    <a class="btn" href="{{ url_for('main.index') }}">Strona główna</a>
+    <a class="btn btn--soft" href="{{ url_for('main.index') }}">Strona główna</a>
+    <a class="btn btn--soft" href="{{ url_for('auth.logout') }}">Wyloguj</a>
   </div>
 {% endblock %}

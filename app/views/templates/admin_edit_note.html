@@ -3,9 +3,10 @@
 
 {% block content %}
   <h1>Edytuj notatkę</h1>
+  <p class="muted">Edycja notatki jako administrator.</p>
 
   <div class="actions" style="margin-bottom: 12px;">
-    <a class="btn" href="{{ url_for('admin.panel') }}">Wróć do panelu</a>
+    <a class="btn btn--soft" href="{{ url_for('admin.panel') }}">Wróć do panelu</a>
   </div>
 
   <form method="post" class="card">
@@ -24,6 +25,9 @@
       Wykonane
     </label>
 
-    <button class="btn" type="submit">Zapisz</button>
+    <div class="actions">
+      <button class="btn btn--primary" type="submit">Zapisz</button>
+      <a class="btn btn--soft" href="{{ url_for('admin.panel') }}">Anuluj</a>
+    </div>
   </form>
 {% endblock %}
